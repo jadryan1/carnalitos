@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark: #1A1A1A;
+  --color-glass: rgba(255, 255, 255, 0.7);
+  --color-glass-border: rgba(0, 0, 0, 0.08);
+  --color-accent-red: #E31E24;
+  --color-accent-green: #4B8B2C;
+
+  --font-bebas: var(--font-bebas-neue);
+  --font-sans: var(--font-dm-sans);
+}
+
+:root {
+  --accent: #E31E24;
+  --accent-green: #4B8B2C;
+  --accent-grad: linear-gradient(135deg, #E31E24 0%, #B01018 100%);
+  --bg: #f8f8f8;
+  --surface: #ffffff;
+  --surface2: #f0f0f0;
+  --text: #111111;
+  --muted: #555555;
+  --border: #e0e0e0;
+}
+
+@layer base {
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    @apply bg-[#FFFFFF] text-[#111111] font-sans overflow-x-hidden antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bebas tracking-wide;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(135deg, #E31E24 0%, #B01018 100%);
+  }
+
+  .text-gradient-accent {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    @apply bg-gradient-to-r from-[--color-accent-green] to-[--color-accent-red];
+  }
+
+  .glass-card {
+    @apply bg-glass border border-glass-border backdrop-blur-[24px] shadow-[0_8px_32px_rgba(75,139,44,0.05)] rounded-[32px] transition-all duration-400 ease-out;
+  }
+
+  .glass-card:hover {
+    @apply scale-[1.02] -translate-y-[6px] shadow-[0_12px_40px_rgba(75,139,44,0.12)];
+  }
+
+  .section-title {
+    @apply font-bold italic;
+  }
+}
