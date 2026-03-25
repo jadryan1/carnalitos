@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, Phone, ArrowRight } from "lucide-react";
 import { config } from "@/config/client";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 const links = [
@@ -39,39 +38,24 @@ export function Navbar() {
 
   return (
     <header
+      className="fixed top-0 left-0 right-0 z-50 flex items-center bg-[#0a0a0a] border-b border-[#E31E24]/25 px-6 md:px-12 h-24 md:h-[160px]"
       style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        height: "160px",
-        margin: 0,
-        padding: "0 48px",
-        display: "flex",
-        alignItems: "center",
-        background: "rgba(10, 10, 10, 1)",
-        backdropFilter: "none",
-        WebkitBackdropFilter: "none",
-        borderBottom: "1px solid rgba(227, 30, 36, 0.25)",
         transform: isVisible ? "translateY(0)" : "translateY(-100%)",
         transition: "transform 0.3s ease",
       }}
     >
       <div
-        className="flex items-center w-full"
-        style={{ height: "160px", maxWidth: "1280px", margin: "0 auto" }}
+        className="flex items-center w-full h-full max-w-7xl mx-auto"
       >
 
         {/* ── Logo ── */}
-        <Link href="/" className="relative z-50 shrink-0 flex items-center" style={{ marginRight: "48px" }}>
+        <Link href="/" className="relative z-50 shrink-0 flex items-center mr-auto md:mr-12">
           <Image
             src="/carnalitoslogo.png"
             alt="Carnalitos Mobile Detailing"
             width={112}
             height={112}
-            className="object-contain block"
-            style={{ height: "112px", maxHeight: "112px", width: "auto", flexShrink: 0 }}
+            className="object-contain block h-[48px] md:h-[112px] w-auto shrink-0"
             priority
           />
         </Link>
@@ -158,23 +142,75 @@ export function Navbar() {
         {/* ── Mobile Hamburger ── */}
         <button
           className="md:hidden relative z-50 ml-auto text-white active:scale-95 transition-transform"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle menu"
+          onClick={() => {
+            setIsOpen(true);
+            document.body.style.overflow = "hidden";
+          }}
+          aria-label="Open menu"
         >
-          {isOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+          <Menu className="w-7 h-7" />
         </button>
       </div>
 
-      {/* ── Mobile Full-Screen Overlay ── */}
+      {/* ── Mobile Drawer ── */}
+      {/* Dark overlay */}
       <div
-        className={cn(
-          "fixed inset-0 z-40 flex flex-col items-center justify-center px-8 py-16 transition-all duration-400",
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        )}
-        style={{ background: "#0a0a0a" }}
+        className="md:hidden fixed inset-0 z-[9998]"
+        style={{
+          background: "rgba(0,0,0,0.6)",
+          opacity: isOpen ? 1 : 0,
+          pointerEvents: isOpen ? "auto" : "none",
+          transition: "opacity 0.3s ease",
+        }}
+        onClick={() => {
+          setIsOpen(false);
+          document.body.style.overflow = "";
+        }}
+      />
+
+      {/* Drawer panel */}
+      <div
+        className="md:hidden fixed top-0 right-0 z-[9999] flex flex-col overflow-y-auto"
+        style={{
+          width: "75vw",
+          height: "100vh",
+          background: "#0a0a0a",
+          borderLeft: "1px solid rgba(227,30,36,0.3)",
+          padding: "32px 28px",
+          transform: isOpen ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 0.3s ease",
+        }}
       >
-        {/* Mobile Nav Links */}
-        <nav className="flex flex-col items-center w-full max-w-xs mb-12" style={{ gap: "0" }}>
+        {/* Top row: Logo + X */}
+        <div className="flex items-center justify-between">
+          <Link href="/" onClick={() => { setIsOpen(false); document.body.style.overflow = ""; }}>
+            <Image
+              src="/carnalitoslogo.png"
+              alt="Carnalitos Mobile Detailing"
+              width={112}
+              height={44}
+              className="object-contain"
+              style={{ height: "44px", width: "auto" }}
+              priority
+            />
+          </Link>
+          <button
+            onClick={() => {
+              setIsOpen(false);
+              document.body.style.overflow = "";
+            }}
+            aria-label="Close menu"
+            style={{ background: "none", border: "none", color: "#ffffff", fontSize: "24px", lineHeight: 1, cursor: "pointer" }}
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", margin: "24px 0" }} />
+
+        {/* Nav links */}
+        <nav className="flex flex-col">
           {links.map((link) => {
             const isActive =
               pathname === link.href ||
@@ -183,53 +219,75 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-bebas w-full text-center border-b border-white/5 transition-colors duration-200"
+                onClick={() => {
+                  setIsOpen(false);
+                  document.body.style.overflow = "";
+                }}
+                className="font-bebas block"
                 style={{
-                  fontSize: "2.5rem",
-                  letterSpacing: "0.1em",
-                  color: isActive ? "#E31E24" : "rgba(255,255,255,0.9)",
-                  padding: "1rem 0",
+                  fontSize: "2rem",
+                  letterSpacing: "0.15em",
+                  color: isActive ? "#E31E24" : "#ffffff",
+                  padding: "14px 0",
+                  borderBottom: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
-                {link.label}
+                {link.label.toUpperCase()}
               </Link>
             );
           })}
         </nav>
 
-        {/* Mobile CTA Buttons */}
-        <div className="flex flex-col w-full max-w-xs" style={{ gap: "10px" }}>
-          <a href="tel:2012891226" className="w-full">
-            <button
-              className="w-full flex items-center justify-center gap-2 font-sans font-medium text-white"
-              style={{
-                background: "#111111",
-                border: "1px solid rgba(255,255,255,0.15)",
-                borderRadius: "9999px",
-                padding: "0.9rem 1.5rem",
-                fontSize: "0.85rem",
-                letterSpacing: "0.1em",
-              }}
-            >
-              <Phone className="w-4 h-4" />
-              CALL 201.289.1226
-            </button>
+        {/* Spacer */}
+        <div style={{ flex: 1 }} />
+
+        {/* Bottom CTAs */}
+        <div className="flex flex-col" style={{ gap: "10px" }}>
+          <a
+            href="tel:2012891226"
+            onClick={() => {
+              setIsOpen(false);
+              document.body.style.overflow = "";
+            }}
+            style={{
+              display: "block",
+              width: "100%",
+              padding: "0.85rem",
+              borderRadius: "9999px",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "#ffffff",
+              textAlign: "center",
+              fontFamily: "sans-serif",
+              fontSize: "0.85rem",
+              letterSpacing: "0.1em",
+              textDecoration: "none",
+            }}
+          >
+            CALL 201.289.1226
           </a>
-          <Link href={config.navCTA.href} className="w-full">
-            <button
-              className="w-full flex items-center justify-center gap-2 font-sans font-medium text-white"
-              style={{
-                background: "linear-gradient(135deg, #E31E24 0%, #B01018 100%)",
-                borderRadius: "9999px",
-                padding: "0.9rem 1.5rem",
-                fontSize: "0.85rem",
-                letterSpacing: "0.1em",
-                boxShadow: "0 4px 20px rgba(227,30,36,0.45)",
-              }}
-            >
-              BOOK A SPA DAY
-              <ArrowRight className="w-4 h-4" />
-            </button>
+          <Link
+            href={config.navCTA.href}
+            onClick={() => {
+              setIsOpen(false);
+              document.body.style.overflow = "";
+            }}
+            style={{
+              display: "block",
+              width: "100%",
+              padding: "0.85rem",
+              borderRadius: "9999px",
+              background: "linear-gradient(135deg, #E31E24, #B01018)",
+              color: "#ffffff",
+              textAlign: "center",
+              fontFamily: "sans-serif",
+              fontSize: "0.85rem",
+              letterSpacing: "0.1em",
+              boxShadow: "0 4px 20px rgba(227,30,36,0.35)",
+              textDecoration: "none",
+            }}
+          >
+            BOOK A SPA DAY →
           </Link>
         </div>
       </div>
