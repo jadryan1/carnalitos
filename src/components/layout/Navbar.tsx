@@ -45,17 +45,17 @@ export function Navbar() {
       }}
     >
       <div
-        className="flex items-center w-full h-full max-w-7xl mx-auto"
+        className="relative flex items-center w-full h-full max-w-7xl mx-auto"
       >
 
         {/* ── Logo ── */}
-        <Link href="/" className="relative z-50 shrink-0 flex items-center mr-auto md:mr-12">
+        <Link href="/" className="z-50 shrink-0 flex items-center absolute left-1/2 -translate-x-1/2 md:relative md:left-auto md:translate-x-0 md:mr-12">
           <Image
             src="/carnalitoslogo.png"
             alt="Carnalitos Mobile Detailing"
             width={112}
             height={112}
-            className="object-contain block h-[48px] md:h-[112px] w-auto shrink-0"
+            className="object-contain block h-[105px] md:h-[112px] w-auto shrink-0"
             priority
           />
         </Link>
